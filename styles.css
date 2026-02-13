@@ -1,10 +1,21 @@
 * {
-    background-color: aliceblue;
+    
+}
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background-color: #0d6a3e;
 }
 h1 {
     text-align: center;
+    color: #ffc300;
 }
 #article {
     padding: 100px;   
-    
+}
+#logo {
+    width: 100px; 
+    height: 100px;
 }
