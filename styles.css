@@ -1,21 +1,50 @@
-* {
-    
+@font-face {
+    font-family: "FrizQuadrata";
+    src: url("fonts/Friz.ttf") format("truetype");
 }
+
 header {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 1rem;
     background-color: #0d6a3e;
+    padding: 1rem;
+    margin: 0;
+    
 }
+
+#logotext {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 5rem;
+    font-family: "FrizQuadrata", serif;
+}
+
+#logo {
+    width: 5rem;
+    height: 5rem;
+}
+
 h1 {
-    text-align: center;
     color: #ffc300;
 }
-#article {
-    padding: 100px;   
+
+body {
+    margin: 0;
 }
-#logo {
-    width: 100px; 
-    height: 100px;
+
+nav {
+    display: flex;
+    justify-content: center;
+    padding: 0.4rem;
+    background-color: #ffc300;
+    border-top: 0.2rem solid black;
+    border-bottom: 0.2rem solid black;
+}
+
+.index {
+    margin-left: 5rem;
+    margin-right: 5rem;
+    border-color: black;
+    border-radius: 1rem;
 }
