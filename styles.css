@@ -13,7 +13,14 @@ header {
 }
 
 footer {
-    
+    display: flex;
+    justify-content: center;
+    background-color: #0d6a3e;
+    padding: 1rem;
+    margin: 0;
+    font-family: "FrizQuadrata", serif;
+    color: #ffc300;
+    border-top: 0.2rem solid black;
 }
 
 #logotext {
