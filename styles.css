@@ -282,6 +282,20 @@ body {
 
 .footer__link:hover { color: #ffc300; }
 
+.highlights__source {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+.highlights__source a {
+    color: #0d6a3e;
+    text-decoration: underline;
+}
+
+.highlights__source a:hover {
+    color: black;
+}
 
 @media screen and (min-width: 48rem) {
     .main { padding: 1.5rem 3rem; }
