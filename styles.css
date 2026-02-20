@@ -93,7 +93,7 @@ body {
 }
 
 
-.article__image {
+.image {
     max-width: 100%;
     height: auto;
 }
@@ -133,7 +133,7 @@ body {
     flex-wrap: wrap;
 }
 
-.highlights__item__title {
+.highlights__item-title {
     margin-top: 0;
 }
 
@@ -198,6 +198,11 @@ body {
     outline-offset: 0.1rem;
 }
 
+.text__link:hover {
+    color: black;
+    text-decoration: underline;
+}
+
 
 
 .table {
@@ -254,12 +259,6 @@ body {
     margin-bottom: 2rem;
 }
 
-.current-squad__image {
-    max-width: 100%;
-    height: auto;
-}
-
-
 
 .footer {
     background-color: #0d6a3e;
@@ -286,11 +285,11 @@ body {
 
 @media screen and (min-width: 48rem) {
     .main { padding: 1.5rem 3rem; }
-    .gallery__item { max-width: 25rem; }
 }
 
 @media screen and (min-width: 64rem) {
     .nav { gap: 2rem; }
-
     .main { padding: 2rem 4rem; }
+    .intro__content { flex-direction: column;}
+    .image { max-width: 100%; }
 }
