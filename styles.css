@@ -302,13 +302,12 @@ body {
     color: black;
 }
 
-@media screen and (min-width: 48rem) {
+@media screen and (max-width: 48rem) {
     .main { padding: 1.5rem 3rem; }
-}
-
-@media screen and (min-width: 64rem) {
+    .intro__content { flex-direction: column; align-items: center; }
+    .intro__image { max-width: 100%; }
+    .article__toc { flex-direction: column; align-items: center; }
     .nav { gap: 2rem; }
     .main { padding: 2rem 4rem; }
-    .intro__content { flex-direction: column;}
     .image { max-width: 100%; }
 }
