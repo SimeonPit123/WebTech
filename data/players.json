@@ -8,7 +8,7 @@
       "position": "Flanker",
       "role": "Captain",
       "number": 6,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Siya_Kolisi_2018.jpg/220px-Siya_Kolisi_2018.jpg",
+      "photo": "../images/players/siya_kolisi.webp",
       "formerTeams": [
         { "title": "Stormers", "country": "South Africa", "city": "Cape Town" },
         { "title": "Racing 92", "country": "France", "city": "Paris" },
@@ -23,7 +23,7 @@
       "position": "Lock",
       "role": "Forward",
       "number": 4,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Eben_Etzebeth_2015.jpg/220px-Eben_Etzebeth_2015.jpg",
+      "photo": "../images/players/eben_etzebeth.webp",
       "formerTeams": [
         { "title": "Stormers", "country": "South Africa", "city": "Cape Town" },
         { "title": "Toulon", "country": "France", "city": "Toulon" },
@@ -38,7 +38,7 @@
       "position": "Wing",
       "role": "Back",
       "number": 14,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Cheslin_Kolbe_2019.jpg/220px-Cheslin_Kolbe_2019.jpg",
+      "photo": "../images/players/cheslin-kolbe_m.webp",
       "formerTeams": [
         { "title": "Stormers", "country": "South Africa", "city": "Cape Town" },
         { "title": "Toulouse", "country": "France", "city": "Toulouse" },
@@ -53,7 +53,7 @@
       "position": "Hooker",
       "role": "Forward",
       "number": 2,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Malcolm_Marx_2018_%28cropped%29.jpg/220px-Malcolm_Marx_2018_%28cropped%29.jpg",
+      "photo": "../images/players/malcolm-marx_m.webp",
       "formerTeams": [
         { "title": "Lions", "country": "South Africa", "city": "Johannesburg" },
         { "title": "Kubota Spears", "country": "Japan", "city": "Funabashi" }
@@ -67,7 +67,7 @@
       "position": "Fly-half",
       "role": "Back",
       "number": 10,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Handre_Pollard_2018.jpg/220px-Handre_Pollard_2018.jpg",
+      "photo": "../images/players/handre_pollard.png",
       "formerTeams": [
         { "title": "Bulls", "country": "South Africa", "city": "Pretoria" },
         { "title": "Montpellier", "country": "France", "city": "Montpellier" },
@@ -82,7 +82,7 @@
       "position": "Flanker",
       "role": "Forward",
       "number": 7,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Pieter-Steph_du_Toit_2018.jpg/220px-Pieter-Steph_du_Toit_2018.jpg",
+      "photo": "../images/players/pieter-steph-du-toit_m.webp",
       "formerTeams": [
         { "title": "Sharks", "country": "South Africa", "city": "Durban" },
         { "title": "Stormers", "country": "South Africa", "city": "Cape Town" },
@@ -97,7 +97,7 @@
       "position": "Inside Centre",
       "role": "Back",
       "number": 12,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Damian_de_Allende_2019.jpg/220px-Damian_de_Allende_2019.jpg",
+      "photo": "../images/players/damian-de-allende_m.webp",
       "formerTeams": [
         { "title": "Stormers", "country": "South Africa", "city": "Cape Town" },
         { "title": "Munster", "country": "Ireland", "city": "Limerick" },
@@ -112,7 +112,7 @@
       "position": "Scrum-half",
       "role": "Back",
       "number": 9,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Faf_de_Klerk_2018.jpg/220px-Faf_de_Klerk_2018.jpg",
+      "photo": "../images/players/faf-de-klerk_m.webp",
       "formerTeams": [
         { "title": "Lions", "country": "South Africa", "city": "Johannesburg" },
         { "title": "Sale Sharks", "country": "England", "city": "Manchester" },
@@ -127,7 +127,7 @@
       "position": "Wing",
       "role": "Back",
       "number": 11,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Makazole_Mapimpi_2019.jpg/220px-Makazole_Mapimpi_2019.jpg",
+      "photo": "../images/players/makazole-mapimpi_m.webp",
       "formerTeams": [
         { "title": "Sharks", "country": "South Africa", "city": "Durban" },
         { "title": "Southern Kings", "country": "South Africa", "city": "Gqeberha" }
@@ -141,7 +141,7 @@
       "position": "Loosehead Prop",
       "role": "Forward",
       "number": 1,
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Ox_Nch%C3%A9_2019_%28cropped%29.jpg/220px-Ox_Nch%C3%A9_2019_%28cropped%29.jpg",
+      "photo": "../images/players/ox-nche_m.webp",
       "formerTeams": [
         { "title": "Sharks", "country": "South Africa", "city": "Durban" },
         { "title": "Cheetahs", "country": "South Africa", "city": "Bloemfontein" }
