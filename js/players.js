@@ -167,12 +167,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 card.classList.add("player-card--expanded");
                 card.setAttribute("aria-expanded", "true");
             }
-        }, false); /* false = bubbling phase */
+        }, false); 
+
+        const fragment = document.createDocumentFragment();
 
         for (const player of players) {
             const card = createPlayerCard(player);
-            cardsContainer.appendChild(card);
+            fragment.appendChild(card);
         }
+
+        cardsContainer.appendChild(fragment);
 
         cardsSection.appendChild(cardsContainer);
         article.appendChild(cardsSection);
