@@ -1,413 +1,218 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("player-file-input");
     const fileLabel = document.getElementById("file-label");
     const mainContent = document.getElementById("main-content");
 
-    fileInput.addEventListener("change", handleFileSelect);
+    const clear = element => element.replaceChildren();
 
-    function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
+    const make = (tag, className, text) => {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+    };
 
-        if (!file.name.endsWith(".json") && file.type !== "application/json") {
-            displayError("Please select a valid JSON file.");
-            return;
-        }
+    const createDetail = (label, value) => {
+        const p = make("p", "player-card__detail");
+        const strong = document.createElement("strong");
+        strong.textContent = label;
+        p.append(strong, value);
+        return p;
+    };
 
-        const reader = new FileReader();
+    const createPlayerCard = player => {
+        const card = make("article", "player-card");
+        card.tabIndex = 0;
 
-        reader.addEventListener("load", function (e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                buildPageContent(data);
-            } catch (error) {
-                displayError("Error parsing JSON file: " + error.message);
-            }
+        card.addEventListener("click", () => {
+            const open = card.classList.contains("player-card--expanded");
+            document.querySelectorAll(".player-card--expanded").forEach(element => {
+                element.classList.remove("player-card--expanded");
+            });
+            if (!open) card.classList.add("player-card--expanded");
         });
 
-        reader.addEventListener("error", function () {
-            displayError("Error reading the file. Please try again.");
-        });
-
-        reader.readAsText(file);
-    }
-
-    function displayError(message) {
-        clearElement(mainContent);
-
-        const errorParagraph = document.createElement("p");
-        errorParagraph.className = "error-message";
-        errorParagraph.appendChild(document.createTextNode(message));
-        mainContent.appendChild(errorParagraph);
-    }
-
-    function clearElement(element) {
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-    }
-
-    function buildPageContent(data) {
-        if (!data.players || !Array.isArray(data.players)) {
-            displayError("Invalid data format: expected a 'players' array.");
-            return;
-        }
-
-        fileLabel.style.display = "none";
-        fileInput.style.display = "none";
-
-        const reloadButton = document.createElement("button");
-        reloadButton.className = "reload-button";
-        reloadButton.appendChild(document.createTextNode("Load Different File"));
-        reloadButton.addEventListener("click", function () {
-            fileLabel.style.display = "";
-            fileInput.style.display = "";
-            fileInput.value = "";
-            reloadButton.parentNode.removeChild(reloadButton);
-            clearElement(mainContent);
-        });
-        fileInput.parentNode.insertBefore(reloadButton, fileInput.nextSibling);
-
-        clearElement(mainContent);
-
-        const players = [];
-        for (const playerData of data.players) {
-            try {
-                const formerTeams = [];
-                if (Array.isArray(playerData.formerTeams)) {
-                    for (const teamData of playerData.formerTeams) {
-                        const team = new Team(teamData.title, teamData.country, teamData.city);
-                        formerTeams.push(team);
-                    }
-                }
-
-                const player = new Player(
-                    playerData.firstName,
-                    playerData.lastName,
-                    playerData.born,
-                    playerData.nationality,
-                    playerData.position,
-                    playerData.role,
-                    playerData.number,
-                    playerData.photo,
-                    formerTeams
-                );
-                players.push(player);
-            } catch (error) {
-                console.error("Error creating player:", playerData.firstName, error.message);
-            }
-        }
-
-        players.sort(function (a, b) {
-            return a.number - b.number;
-        });
-
-        const article = document.createElement("article");
-        article.className = "article";
-
-        const introSection = document.createElement("section");
-        introSection.className = "section players-intro";
-
-        const introHeading = document.createElement("h3");
-        introHeading.className = "section__title";
-        introHeading.appendChild(document.createTextNode("Squad Overview"));
-        introSection.appendChild(introHeading);
-
-        const introParagraph = document.createElement("p");
-        introParagraph.className = "text";
-        introParagraph.appendChild(document.createTextNode(
-            "The following " + players.length + " players have been loaded from the selected data file. " +
-            "Hover over a player's former teams to see detailed information about each club."
-        ));
-        introSection.appendChild(introParagraph);
-        article.appendChild(introSection);
-
-        const cardsSection = document.createElement("section");
-        cardsSection.className = "section players-grid";
-
-        const cardsHeading = document.createElement("h3");
-        cardsHeading.className = "section__title";
-        cardsHeading.appendChild(document.createTextNode("Player Profiles"));
-        cardsSection.appendChild(cardsHeading);
-
-        const cardsContainer = document.createElement("div");
-        cardsContainer.className = "player-cards";
-
-
-        cardsContainer.addEventListener("click", function (event) {
-            const card = event.target.closest(".player-card");
-            if (card) {
-                card.dataset.captureHandled = "true";
-            }
-        }, true); 
-
-        cardsContainer.addEventListener("click", function (event) {
-            const card = event.target.closest(".player-card");
-            if (!card) {
-                return;
-            }
-
-            if (event.target.tagName === "A" || event.target.tagName === "IMG") {
-                return;
-            }
-
-            const isExpanded = card.classList.contains("player-card--expanded");
-
-            const allCards = cardsContainer.querySelectorAll(".player-card--expanded");
-            for (const expandedCard of allCards) {
-                expandedCard.classList.remove("player-card--expanded");
-                expandedCard.setAttribute("aria-expanded", "false");
-            }
-
-            if (!isExpanded) {
-                card.classList.add("player-card--expanded");
-                card.setAttribute("aria-expanded", "true");
-            }
-        }, false); 
-
-        for (const player of players) {
-            const card = createPlayerCard(player);
-            cardsContainer.appendChild(card);
-        }
-
-        cardsSection.appendChild(cardsContainer);
-        article.appendChild(cardsSection);
-
-        const tableSection = document.createElement("section");
-        tableSection.className = "section players-table-section";
-
-        const tableHeading = document.createElement("h3");
-        tableHeading.className = "section__title";
-        tableHeading.appendChild(document.createTextNode("Squad List"));
-        tableSection.appendChild(tableHeading);
-
-        const table = createPlayerTable(players);
-        tableSection.appendChild(table);
-        article.appendChild(tableSection);
-
-        mainContent.appendChild(article);
-
-        if (typeof refreshElementMenu === "function") {
-            refreshElementMenu();
-        }
-    }
-
-    function createPlayerCard(player) {
-        const card = document.createElement("article");
-        card.className = "player-card";
-        card.setAttribute("role", "button");
-        card.setAttribute("tabindex", "0");
-        card.setAttribute("aria-expanded", "false");
-        card.setAttribute("aria-label", "Player card for " + player.fullName + ". Click to expand.");
-
-        card.addEventListener("keydown", function (event) {
+        card.addEventListener("keydown", event => {
             if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 card.click();
             }
         });
 
-        const photoWrapper = document.createElement("div");
-        photoWrapper.className = "player-card__photo-wrapper";
-
-        const photo = document.createElement("img");
-        photo.className = "player-card__photo";
+        const photoWrapper = make("div", "player-card__photo-wrapper");
+        const photo = make("img", "player-card__photo");
         photo.src = player.photo;
-        photo.alt = "Photo of " + player.fullName;
+        photo.alt = player.fullName;
         photo.loading = "lazy";
-
-        photo.addEventListener("error", function () {
-            this.alt = "Photo not available for " + player.fullName;
-            this.src = "";
-            this.style.display = "none";
-            const placeholder = document.createElement("div");
-            placeholder.className = "player-card__photo-placeholder";
-            placeholder.appendChild(document.createTextNode("#" + player.number));
-            photoWrapper.appendChild(placeholder);
+        photo.addEventListener("error", () => {
+            photo.remove();
+            photoWrapper.appendChild(make("div", "player-card__photo-placeholder", "#" + player.number));
         });
-
         photoWrapper.appendChild(photo);
-        card.appendChild(photoWrapper);
 
-        const infoDiv = document.createElement("div");
-        infoDiv.className = "player-card__info";
+        const info = make("div", "player-card__info");
+        info.append(
+            make("h4", "player-card__name", player.fullName),
+            make("span", "player-card__number", "#" + player.number),
+            make("p", "player-card__position", player.position)
+        );
 
-        const nameHeading = document.createElement("h4");
-        nameHeading.className = "player-card__name";
-        nameHeading.appendChild(document.createTextNode(player.fullName));
-        infoDiv.appendChild(nameHeading);
-
-        const numberBadge = document.createElement("span");
-        numberBadge.className = "player-card__number";
-        numberBadge.appendChild(document.createTextNode("#" + player.number));
-        infoDiv.appendChild(numberBadge);
-
-        const positionParagraph = document.createElement("p");
-        positionParagraph.className = "player-card__position";
-        positionParagraph.appendChild(document.createTextNode(player.position));
-        infoDiv.appendChild(positionParagraph);
-
-        card.appendChild(infoDiv);
-
-        const detailsDiv = document.createElement("div");
-        detailsDiv.className = "player-card__details";
-
-        const roleParagraph = document.createElement("p");
-        roleParagraph.className = "player-card__detail";
-        const roleLabel = document.createElement("strong");
-        roleLabel.appendChild(document.createTextNode("Role: "));
-        roleParagraph.appendChild(roleLabel);
-        roleParagraph.appendChild(document.createTextNode(player.role));
-        detailsDiv.appendChild(roleParagraph);
-
-        const nationalityParagraph = document.createElement("p");
-        nationalityParagraph.className = "player-card__detail";
-        const nationalityLabel = document.createElement("strong");
-        nationalityLabel.appendChild(document.createTextNode("Nationality: "));
-        nationalityParagraph.appendChild(nationalityLabel);
-        nationalityParagraph.appendChild(document.createTextNode(player.nationality));
-        detailsDiv.appendChild(nationalityParagraph);
-
-        const bornParagraph = document.createElement("p");
-        bornParagraph.className = "player-card__detail";
-        const bornLabel = document.createElement("strong");
-        bornLabel.appendChild(document.createTextNode("Born: "));
-        bornParagraph.appendChild(bornLabel);
-        const formattedDate = player.born.toLocaleDateString("en-GB", {
+        const details = make("div", "player-card__details");
+        const born = player.born.toLocaleDateString("en-GB", {
             day: "numeric",
             month: "long",
             year: "numeric"
         });
-        bornParagraph.appendChild(document.createTextNode(formattedDate + " (age " + player.age + ")"));
-        detailsDiv.appendChild(bornParagraph);
 
-        const teamsHeading = document.createElement("p");
-        teamsHeading.className = "player-card__detail";
-        const teamsLabel = document.createElement("strong");
-        teamsLabel.appendChild(document.createTextNode("Former Teams:"));
-        teamsHeading.appendChild(teamsLabel);
-        detailsDiv.appendChild(teamsHeading);
+        details.append(
+            createDetail("Role: ", player.role),
+            createDetail("Nationality: ", player.nationality),
+            createDetail("Born: ", born + " (age " + player.age + ")")
+        );
 
-        const teamsList = document.createElement("ul");
-        teamsList.className = "player-card__teams";
+        details.appendChild(createDetail("Former Teams:", ""));
 
-        for (const team of player.formerTeams) {
-            const teamItem = document.createElement("li");
-            teamItem.className = "player-card__team";
+        const teamsList = make("ul", "player-card__teams");
 
-            const teamLink = document.createElement("span");
-            teamLink.className = "player-card__team-name";
-            teamLink.appendChild(document.createTextNode(team.title));
-            teamLink.setAttribute("tabindex", "0");
-            teamLink.setAttribute("role", "button");
-            teamLink.setAttribute("aria-label", team.title + ". Hover for details.");
+        player.formerTeams.forEach(team => {
+            const item = make("li", "player-card__team");
+            const name = make("span", "player-card__team-name", team.title);
+            const tooltip = make("span", "tooltip");
 
-            const tooltip = document.createElement("span");
-            tooltip.className = "tooltip";
-            tooltip.setAttribute("role", "tooltip");
+            tooltip.append(
+                make("strong", "", team.title),
+                document.createElement("br"),
+                "City: " + team.city,
+                document.createElement("br"),
+                "Country: " + team.country
+            );
 
-            const tooltipTitle = document.createElement("strong");
-            tooltipTitle.appendChild(document.createTextNode(team.title));
-            tooltip.appendChild(tooltipTitle);
-            tooltip.appendChild(document.createElement("br"));
-            tooltip.appendChild(document.createTextNode("City: " + team.city));
-            tooltip.appendChild(document.createElement("br"));
-            tooltip.appendChild(document.createTextNode("Country: " + team.country));
+            name.appendChild(tooltip);
 
-            teamLink.appendChild(tooltip);
-
-            teamLink.addEventListener("mouseenter", function () {
-                tooltip.classList.add("tooltip--visible");
+            ["mouseenter", "focus"].forEach(type => {
+                name.addEventListener(type, () => tooltip.classList.add("tooltip--visible"));
             });
 
-            teamLink.addEventListener("mouseleave", function () {
-                tooltip.classList.remove("tooltip--visible");
+            ["mouseleave", "blur"].forEach(type => {
+                name.addEventListener(type, () => tooltip.classList.remove("tooltip--visible"));
             });
 
-            teamLink.addEventListener("focus", function () {
-                tooltip.classList.add("tooltip--visible");
-            });
+            item.appendChild(name);
+            teamsList.appendChild(item);
+        });
 
-            teamLink.addEventListener("blur", function () {
-                tooltip.classList.remove("tooltip--visible");
-            });
-
-            teamItem.appendChild(teamLink);
-            teamsList.appendChild(teamItem);
-        }
-
-        detailsDiv.appendChild(teamsList);
-        card.appendChild(detailsDiv);
+        details.appendChild(teamsList);
+        card.append(photoWrapper, info, details);
 
         return card;
-    }
+    };
 
-    function createPlayerTable(players) {
-        const table = document.createElement("table");
-        table.className = "table";
-
-      
-        const caption = document.createElement("caption");
-        caption.className = "table__caption";
-        caption.appendChild(document.createTextNode("Springboks Squad"));
-        table.appendChild(caption);
-
-        const thead = document.createElement("thead");
-        thead.className = "table__head";
-        const headerRow = document.createElement("tr");
-
+    const createPlayerTable = players => {
+        const table = make("table", "table");
         const headers = ["#", "Name", "Position", "Role", "Nationality", "Age"];
-        for (const headerText of headers) {
-            const th = document.createElement("th");
-            th.className = "table__header";
-            th.setAttribute("scope", "col");
-            th.appendChild(document.createTextNode(headerText));
-            headerRow.appendChild(th);
-        }
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
 
-        const tbody = document.createElement("tbody");
-        tbody.className = "table__body";
+        const caption = make("caption", "table__caption", "Springboks Squad");
+        const thead = make("thead", "table__head");
+        const headRow = document.createElement("tr");
 
-        for (let i = 0; i < players.length; i++) {
-            const player = players[i];
-            const row = document.createElement("tr");
-            row.className = (i % 2 === 1) ? "table__row table__row--alt" : "table__row";
+        headers.forEach(header => {
+            const th = make("th", "table__header", header);
+            headRow.appendChild(th);
+        });
 
-            const cellData = [
-                String(player.number),
-                player.fullName,
-                player.position,
-                player.role,
-                player.nationality,
-                String(player.age)
-            ];
+        thead.appendChild(headRow);
 
-            for (const text of cellData) {
-                const td = document.createElement("td");
-                td.className = "table__cell";
-                td.appendChild(document.createTextNode(text));
-                row.appendChild(td);
-            }
+        const tbody = make("tbody", "table__body");
 
+        players.forEach((player, index) => {
+            const row = make("tr", index % 2 ? "table__row table__row--alt" : "table__row");
+            [player.number, player.fullName, player.position, player.role, player.nationality, player.age].forEach(value => {
+                row.appendChild(make("td", "table__cell", String(value)));
+            });
             tbody.appendChild(row);
-        }
-        table.appendChild(tbody);
+        });
 
-        const tfoot = document.createElement("tfoot");
-        tfoot.className = "table__foot";
+        const tfoot = make("tfoot", "table__foot");
         const footRow = document.createElement("tr");
-        const footCell = document.createElement("td");
-        footCell.className = "table__cell";
-        footCell.setAttribute("colspan", String(headers.length));
-        footCell.appendChild(document.createTextNode("Data loaded from JSON file"));
+        const footCell = make("td", "table__cell", "Data loaded from JSON file");
+        footCell.colSpan = headers.length;
         footRow.appendChild(footCell);
         tfoot.appendChild(footRow);
-        table.appendChild(tfoot);
 
+        table.append(caption, thead, tbody, tfoot);
         return table;
-    }
+    };
+
+    const buildPageContent = data => {
+        fileLabel.style.display = "none";
+        fileInput.style.display = "none";
+
+        const oldButton = fileInput.parentNode.querySelector(".reload-button");
+        if (oldButton) oldButton.remove();
+
+        const reloadButton = make("button", "reload-button", "Load Different File");
+        reloadButton.addEventListener("click", () => {
+            fileLabel.style.display = "";
+            fileInput.style.display = "";
+            fileInput.value = "";
+            reloadButton.remove();
+            clear(mainContent);
+        });
+
+        fileInput.parentNode.insertBefore(reloadButton, fileInput.nextSibling);
+
+        const players = data.players.map(player => new Player(
+            player.firstName,
+            player.lastName,
+            player.born,
+            player.nationality,
+            player.position,
+            player.role,
+            player.number,
+            player.photo,
+            Array.isArray(player.formerTeams)
+                ? player.formerTeams.map(team => new Team(team.title, team.country, team.city))
+                : []
+        )).sort((a, b) => a.number - b.number);
+
+        clear(mainContent);
+
+        const article = make("article", "article");
+
+        const intro = make("section", "section players-intro");
+        intro.append(
+            make("h3", "section__title", "Squad Overview"),
+            make("p", "text", "The following " + players.length + " players have been loaded from the selected data file. Hover over a player's former teams to see detailed information about each club.")
+        );
+
+        const cardsSection = make("section", "section players-cards-section");
+        cardsSection.appendChild(make("h3", "section__title", "Player Cards"));
+
+        const cards = make("div", "player-cards");
+        cards.append(...players.map(createPlayerCard));
+        cardsSection.appendChild(cards);
+
+        const tableSection = make("section", "section players-table-section");
+        tableSection.append(
+            make("h3", "section__title", "Squad List"),
+            createPlayerTable(players)
+        );
+
+        article.append(intro, cardsSection, tableSection);
+        mainContent.appendChild(article);
+
+        if (typeof refreshElementMenu === "function") refreshElementMenu();
+    };
+
+    fileInput.addEventListener("change", event => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.addEventListener("load", e => {
+            buildPageContent(JSON.parse(e.target.result));
+        });
+        reader.readAsText(file);
+    });
 });
