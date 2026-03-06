@@ -1,5 +1,3 @@
-"use strict";
-
 document.addEventListener("DOMContentLoaded", function () {
     const fileInput = document.getElementById("player-file-input");
     const fileLabel = document.getElementById("file-label");
@@ -143,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (card) {
                 card.dataset.captureHandled = "true";
             }
-        }, true); /* true = capturing phase */
+        }, true); 
 
         cardsContainer.addEventListener("click", function (event) {
             const card = event.target.closest(".player-card");
@@ -350,7 +348,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const table = document.createElement("table");
         table.className = "table";
 
-        /* Caption */
+      
         const caption = document.createElement("caption");
         caption.className = "table__caption";
         caption.appendChild(document.createTextNode("Springboks Squad"));
