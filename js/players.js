@@ -164,6 +164,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (!isExpanded) {
+                // Before expanding the card, lazily load the player's photo if it hasn't been
+                // requested yet.  Using the data-src attribute avoids triggering network
+                // requests until the image is actually needed.  If the src has already been
+                // set (for example after a previous expansion), this conditional has no effect.
+                const img = card.querySelector(".player-card__photo");
+                if (img && !img.getAttribute("src")) {
+                    const dataSrc = img.dataset.src;
+                    if (dataSrc) {
+                        img.src = dataSrc;
+                    }
+                }
                 card.classList.add("player-card--expanded");
                 card.setAttribute("aria-expanded", "true");
             }
@@ -215,23 +226,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
+        // Photo wrapper holds the player's picture as well as a placeholder.  The placeholder is always
+        // rendered up front to avoid layout jank while images load or if an image fails to load.  The
+        // actual image source is stored in a data attribute and only applied when the card is expanded.
         const photoWrapper = document.createElement("div");
         photoWrapper.className = "player-card__photo-wrapper";
 
+        // Placeholder displays the player's jersey number by default.  It will be hidden once the
+        // image finishes loading successfully.
+        const placeholder = document.createElement("div");
+        placeholder.className = "player-card__photo-placeholder";
+        placeholder.appendChild(document.createTextNode("#" + player.number));
+        photoWrapper.appendChild(placeholder);
+
+        // Create the image element but do not set the `src` immediately.  Using a data attribute
+        // defers loading until the user expands the card.  This dramatically reduces the number
+        // of simultaneous network requests and prevents the page from freezing when large or
+        // numerous images are referenced in the JSON file.
         const photo = document.createElement("img");
         photo.className = "player-card__photo";
-        photo.src = player.photo;
+        photo.dataset.src = player.photo;
         photo.alt = "Photo of " + player.fullName;
         photo.loading = "lazy";
 
+        // When the image loads successfully, hide the placeholder so the photo is visible.
+        photo.addEventListener("load", function () {
+            placeholder.style.display = "none";
+        });
+
+        // If the image fails to load (e.g. broken link), keep the placeholder visible and hide the
+        // image element to avoid showing a broken image icon.
         photo.addEventListener("error", function () {
-            this.alt = "Photo not available for " + player.fullName;
-            this.src = "";
             this.style.display = "none";
-            const placeholder = document.createElement("div");
-            placeholder.className = "player-card__photo-placeholder";
-            placeholder.appendChild(document.createTextNode("#" + player.number));
-            photoWrapper.appendChild(placeholder);
         });
 
         photoWrapper.appendChild(photo);
